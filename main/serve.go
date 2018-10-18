@@ -14,6 +14,7 @@ import (
 	"github.com/docker/docker/client"
 
 	"github.com/Dataman-Cloud/puller/debug"
+	"github.com/Dataman-Cloud/puller/version"
 )
 
 type puller struct {
@@ -42,6 +43,7 @@ func (p *puller) run() error {
 	http.HandleFunc("/ping", p.pong)
 	http.HandleFunc("/pull", p.servePulling)
 	http.HandleFunc("/debug/dump", p.debugDump)
+	http.HandleFunc("/debug/toggle", p.debugToggle)
 	return http.ListenAndServe(p.cfg.Listen, nil)
 }
 
@@ -89,7 +91,17 @@ func (p *puller) debugDump(w http.ResponseWriter, r *http.Request) {
 		"configs":  p.cfg,
 		"start_at": p.startAt.Format(time.RFC3339),
 		"num_fds":  debug.NumFd(),
+		"version":  version.FullVersion(),
 	})
+}
+
+func (p *puller) debugToggle(w http.ResponseWriter, r *http.Request) {
+	switch l := logrus.GetLevel(); l {
+	case logrus.DebugLevel:
+		logrus.SetLevel(logrus.InfoLevel)
+	default:
+		logrus.SetLevel(logrus.DebugLevel)
+	}
 }
 
 func (p *puller) doPulls(req *PullRequest) *PullResponse {
@@ -179,6 +191,7 @@ func (p *puller) doPull(ipr *ImagePullRequest, maxRetry int) (resp *ImagePullRes
 	var pullOption = dtypes.ImagePullOptions{}
 	if regAuthStr := ipr.encodeAuth(); regAuthStr != "" {
 		pullOption.RegistryAuth = regAuthStr
+		logrus.Debugln("------> Registry Auth:", regAuthStr) // for debug
 	}
 
 RETRY:
@@ -205,6 +218,10 @@ RETRY:
 			}
 			goto END
 		}
+
+		// for debug
+		bs, _ := json.Marshal(progress)
+		logrus.Debugln("------> ", string(bs))
 
 		if msg, ok := progress["error"]; ok {
 			err = fmt.Errorf("the pulling progress abort with error: %v", msg) // the pulling progress met any halfway error
