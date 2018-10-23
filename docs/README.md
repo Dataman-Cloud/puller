@@ -2,11 +2,11 @@
 ## Build 
 
 ```bash
-# make               # build binary: bin/puller
+# NOLINT=true make               # build binary: bin/puller
 
 Or
 
-# make image         # build docker image: bbklab/puller:latest
+# NOLINT=true make image         # build docker image: bbklab/puller:latest
 ```
 
 ## Run
