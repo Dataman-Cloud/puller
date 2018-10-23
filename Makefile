@@ -55,7 +55,7 @@ endif
 
 product: image
 
-image:
+image: binary
 	docker build --force-rm -t $(ImgName):$(gitCommit) -f Dockerfile .
 	docker tag $(ImgName):$(gitCommit) $(ImgName):latest
 	echo "Puller Image Built!"

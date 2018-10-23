@@ -1,9 +1,26 @@
 
-## Run
+## Build 
 
 ```bash
-# make
-# ./bin/puller serve --listen :9006
+# make               # build binary: bin/puller
+
+Or
+
+# make image         # build docker image: bbklab/puller:latest
+```
+
+## Run
+```bash
+# ./bin/puller serve --listen :9006 --docker-socket /var/run/docker.sock
+
+Or
+
+# docker run -d --name=puller \
+	-e LISTEN_ADDR=:9006 \
+	-e DOCKER_SOCKET=/var/run/docker.sock \
+	--net=host \
+	-v=/var/run/docker.sock:/var/run/docker.sock \
+	bbklab/puller
 ```
 
 ## API
