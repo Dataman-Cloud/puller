@@ -46,7 +46,10 @@ gometalinter: prepare-gometalinter
 			--enable=vet --enable=goconst ./...
 	echo "  --- Gometalinter Passed!"
 
-binary: prepare gocheck
+binary: prepare
+ifeq (${NOLINT},)   # NOLINT == ""
+	@make gocheck
+endif
 ifeq (${ENV_CIRCLECI}, true)
 	@make host-build
 else
