@@ -31,19 +31,17 @@ prepare:
 
 gocheck: gometalinter
 
-prepare-gometalinter:
-	@if ! command -v gometalinter > /dev/null 2>&1; then \
-		go get -u github.com/alecthomas/gometalinter; \
-		gometalinter --install; \
-		echo "gometalinter installed!"; \
-	fi
-
-gometalinter: prepare-gometalinter
-	gometalinter --skip=integration-test --skip=vendor \
+# use gometalinter to replace all of above go linters
+gometalinter:
+	docker run --name gocheck-puller --rm \
+		-v $(PWD):/go/src/${PKG}:ro \
+		bbklab/gometalinter:latest \
+		gometalinter --skip=integration-test --skip=vendor --skip=assets \
 			--deadline=120s \
 			--disable-all \
 			--enable=gofmt --enable=golint \
-			--enable=vet --enable=goconst ./...
+			--enable=vet --enable=goconst \
+			/go/src/${PKG}/...
 	echo "  --- Gometalinter Passed!"
 
 binary: prepare
