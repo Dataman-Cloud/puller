@@ -6,10 +6,11 @@ import (
 	"runtime"
 )
 
+// nolint
 var (
-	version   string // set by build LD_FLAGS
-	gitCommit string // set by build LD_FLAGS
-	buildAt   string // set by build LD_FLAGS
+	version   string = "1.0" // set by build LD_FLAGS
+	gitCommit string         // set by build LD_FLAGS
+	buildAt   string         // set by build LD_FLAGS
 )
 
 // GetVersion is exported
