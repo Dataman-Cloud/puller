@@ -15,7 +15,8 @@ GIT_COMMIT=$(gitCommit)
 ifneq ($(gitDirty),)  # ---> gitDirty != ""
 GIT_COMMIT=$(gitCommit)-dirty
 endif
-BUILD_FLAGS=-X $(PKG)/version.version=$(VERSION) -X $(PKG)/version.gitCommit=$(GIT_COMMIT) -X $(PKG)/version.buildAt=$(BUILD_TIME) -w -s
+# FIXME deprecated
+# BUILD_FLAGS=-X $(PKG)/version.version=$(VERSION) -X $(PKG)/version.gitCommit=$(GIT_COMMIT) -X $(PKG)/version.buildAt=$(BUILD_TIME) -w -s
 
 default: binary
 
